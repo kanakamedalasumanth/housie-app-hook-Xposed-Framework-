@@ -1,0 +1,2 @@
+rootProject.name='housie-app-hook'
+include ':app'
