@@ -40,7 +40,7 @@ public class AppHooker extends Application implements IXposedHookZygoteInit, IXp
     Context context=null;
 
 
-     XSharedPreferences sharedPreferences;
+    XSharedPreferences sharedPreferences;
 
 
     Object GameScreenActivityInstance=null;
@@ -62,8 +62,8 @@ public class AppHooker extends Application implements IXposedHookZygoteInit, IXp
         try {
 
 
-        if(lpparam.packageName.equals("com.viaangaming.housiequiz"))
-        {
+            if(lpparam.packageName.equals("com.viaangaming.housiequiz"))
+            {
 //            sharedPreferences.reload();
 //           Log.i(TAG,""+ sharedPreferences.getBoolean(MainActivity.AUTO_ANSWER_KEY,false));
 //            if(lpparam.isFirstApplication)
@@ -76,9 +76,9 @@ public class AppHooker extends Application implements IXposedHookZygoteInit, IXp
 //                Toasty.Config.getInstance().setTextSize(12).allowQueue(false).apply();;
 //            }
 
-            Log.i(TAG,"-------------->  Application found housiequiz  <--------------------");
+                Log.i(TAG,"-------------->  Application found housiequiz  <--------------------");
 
-            XposedHelpers.findAndHookMethod("android.app.LoadedApk",lpparam.classLoader ,"makeApplication",boolean.class, Instrumentation.class, new XC_MethodHook() {
+                XposedHelpers.findAndHookMethod("android.app.LoadedApk",lpparam.classLoader ,"makeApplication",boolean.class, Instrumentation.class, new XC_MethodHook() {
 
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -92,90 +92,93 @@ public class AppHooker extends Application implements IXposedHookZygoteInit, IXp
                     context = (Application)param.getResult();
 
                     //Toasty.error(context.getApplicationContext(), "---->Yooo My Code Successfully Injected :-)<-------------",Toasty.LENGTH_LONG).show();
-                   Toast.makeText(context.getApplicationContext(), Html.fromHtml("<p style=\"font-family:'Courier New'\"><b>Successfully injected my code :-)<br>Happy Gamming</p>"),Toast.LENGTH_LONG).show();
+                    Toast.makeText(context.getApplicationContext(), Html.fromHtml("<p style=\"font-family:'Courier New'\"><b>Successfully injected my code :-)<br>Happy Gamming</p>"),Toast.LENGTH_LONG).show();
                 }
             });
 
-            Class daClazz = Class.forName("com.viaangaming.housiequiz.Activity.da",false,lpparam.classLoader);
-            XposedBridge.hookAllMethods(daClazz, "run", new XC_MethodHook() {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    super.beforeHookedMethod(param);
-                }
+                Class daClazz = Class.forName("com.viaangaming.housiequiz.Activity.GameScreenActivity$p$a$a",false,lpparam.classLoader);
+                XposedBridge.hookAllMethods(daClazz, "run", new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        super.beforeHookedMethod(param);
+                    }
 
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    super.afterHookedMethod(param);
-                    Log.i(TAG,"After On Run : ---->com.viaangaming.housiequiz.Activity.da");
-                    if(GameScreenActivityInstance!=null) {
-                       // String question = (String) XposedHelpers.getObjectField(GameScreenActivityInstance, "K");
-                        String answer = (String) XposedHelpers.getObjectField(GameScreenActivityInstance, "F");
-                        //Log.i(TAG,"Question :"+question);
-                        Log.i(TAG,"Answer :"+answer);
-                        if (context != null){
-                            TextView optionA = (TextView) XposedHelpers.getObjectField(GameScreenActivityInstance,"L");
-                            TextView optionB = (TextView) XposedHelpers.getObjectField(GameScreenActivityInstance,"M");
-                            TextView optionC = (TextView) XposedHelpers.getObjectField(GameScreenActivityInstance,"N");
-                            byte max = 9;
-                            byte min = 2;
-                            int randomNamber =(int)(Math.random() * ((max - min) + 1)) + min;
-                            byte choiceNumber = 0;
-                            if(optionA.getText().equals(answer))
-                            {
-                                choiceNumber =1;
-                                //setAnswerAt(randomNamber,optionA);
-                            }
-                            else if(optionB.getText().equals(answer))
-                            {
-                                choiceNumber =2;
-                                //setAnswerAt(randomNamber,optionB);
-                            }
-                            else if(optionC.getText().equals(answer))
-                            {
-                                choiceNumber =3;
-                                //setAnswerAt(randomNamber,optionC);
-                            }
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        super.afterHookedMethod(param);
+                        Log.i(TAG,"After On Run : ---->com.viaangaming.housiequiz.Activity.da");
+                        if(GameScreenActivityInstance!=null) {
+                            // String question = (String) XposedHelpers.getObjectField(GameScreenActivityInstance, "K");
+                            String answer = (String) XposedHelpers.getObjectField(GameScreenActivityInstance, "Q");
+                            //Log.i(TAG,"Question :"+question);
+                            Log.i(TAG,"Answer :"+answer);
+                            if (context != null){
+                                TextView optionA = (TextView) XposedHelpers.getObjectField(GameScreenActivityInstance,"W");
+                                TextView optionB = (TextView) XposedHelpers.getObjectField(GameScreenActivityInstance,"X");
+                                TextView optionC = (TextView) XposedHelpers.getObjectField(GameScreenActivityInstance,"Y");
+                                byte max = 9;
+                                byte min = 2;
+                                int randomNamber =(int)(Math.random() * ((max - min) + 1)) + min;
+//                                randomNamber ;
+                                byte choiceNumber = 0;
+                                if(optionA.getText().equals(answer))
+                                {
+                                    choiceNumber =1;
+                                    setAnswerAt(randomNamber,optionA);
+                                }
+                                else if(optionB.getText().equals(answer))
+                                {
+                                    choiceNumber =2;
+                                    setAnswerAt(randomNamber,optionB);
+                                }
+                                else if(optionC.getText().equals(answer))
+                                {
+                                    choiceNumber =3;
+                                    setAnswerAt(randomNamber,optionC);
+                                }
 
-                            Toast.makeText(context.getApplicationContext(), Html.fromHtml("<p style=\"font-family:'Courier New'\"><b>Your Answer: </b>"+answer+"("+choiceNumber+")</p><br><b>Auto Set Enable at "+randomNamber+" Sec</b>"),Toast.LENGTH_LONG).show();
+                                Toast.makeText(context.getApplicationContext(),Html.fromHtml("<p style=\"font-family:'Courier New'\"><b>Your Answer: </b>"+answer+"</p><br>Choice:<b>" +choiceNumber +"</b>"//(AutoSet @"+randomNamber+" Sec)<b>Auto Set Enable at $randomNamber Sec</b>"),Toast.LENGTH_LONG).show();
 
+                                ), Toast.LENGTH_LONG).show();
+
+                            }
+                            // Toasty.info(context.getApplicationContext(), "Your Answer: " + answer, Toast.LENGTH_LONG, true).show();
                         }
-                           // Toasty.info(context.getApplicationContext(), "Your Answer: " + answer, Toast.LENGTH_LONG, true).show();
                     }
-                }
-            });
+                });
 
 
-            Class GameScreenActivityClazz = Class.forName("com.viaangaming.housiequiz.Activity.GameScreenActivity",false,lpparam.classLoader);
-            XposedBridge.hookAllMethods(GameScreenActivityClazz, "onCreate", new XC_MethodHook() {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    super.beforeHookedMethod(param);
-                }
-
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    super.afterHookedMethod(param);
-                    GameScreenActivityInstance = param.thisObject;
-                    Log.i(TAG,"After OnCreate :: com.viaangaming.housiequiz.Activity.GameScreenActivity");
-                    if(lpparam.isFirstApplication) {
-                        Toast.makeText(context.getApplicationContext(), Html.fromHtml("<p style=\"font-family:'Courier New'\">All the best!!<br><b>Sumanth -:)</b></p>"), Toast.LENGTH_LONG).show();
+                Class GameScreenActivityClazz = Class.forName("com.viaangaming.housiequiz.Activity.GameScreenActivity",false,lpparam.classLoader);
+                XposedBridge.hookAllMethods(GameScreenActivityClazz, "onCreate", new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        super.beforeHookedMethod(param);
                     }
-                    //Toasty.error(context,"\tAll the best \n\n\t By Sumanth :-)",Toast.LENGTH_LONG, true).show();
 
-                    //xx = param.thisObject;
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        super.afterHookedMethod(param);
+                        GameScreenActivityInstance = param.thisObject;
+                        Log.i(TAG,"After OnCreate :: com.viaangaming.housiequiz.Activity.GameScreenActivity");
+                        if(lpparam.isFirstApplication) {
+                            Toast.makeText(context.getApplicationContext(), Html.fromHtml("<p style=\"font-family:'Courier New'\">All the best!!<br><b>Sumanth -:)</b></p>"), Toast.LENGTH_LONG).show();
+                        }
+                        //Toasty.error(context,"\tAll the best \n\n\t By Sumanth :-)",Toast.LENGTH_LONG, true).show();
+
+                        //xx = param.thisObject;
 
 
-                }
-            });
+                    }
+                });
 
-            Log.i(TAG,"--------------> End <--------------------");
+                Log.i(TAG,"--------------> End <--------------------");
 
-        }
+            }
         }
         catch (ClassNotFoundException e)
         {
             e.printStackTrace();
-           Log.i(TAG,"Class not found "+e.getMessage());
+            Log.i(TAG,"Class not found "+e.getMessage());
         }
 
 
@@ -184,32 +187,32 @@ public class AppHooker extends Application implements IXposedHookZygoteInit, IXp
     @Override
     public void initZygote(StartupParam startupParam) throws Throwable {
         Log.i(TAG,"On initZygote module:"+startupParam.modulePath+ " ,startsSystemServer:"+startupParam.startsSystemServer);
-        sharedPreferences = new XSharedPreferences(this.getClass().getPackage().getName());
+//        sharedPreferences = new XSharedPreferences(this.getClass().getPackage().getName());
 
     }
 
 
-   void setAnswerAt(int millis,TextView tx)
-   {
-       if(context==null)
-           return;
+    void setAnswerAt(int millis,TextView tx)
+    {
+        if(context==null)
+            return;
 
-       Handler handler = new Handler(context.getMainLooper());
+        Handler handler = new Handler(context.getMainLooper());
 
-       handler.postAtTime(()->{
-           tx.performClick();
-       },millis);
+        handler.postAtTime(()->{
+        tx.performClick();
+    },8*1000);
 
 
-   }
+    }
 
     void showToastMessage(String msg){
-     if(context!=null)
-     {
-         new Handler(context.getMainLooper()).post(()->{
+        if(context!=null)
+        {
+            new Handler(context.getMainLooper()).post(()->{
             Toast.makeText(context.getApplicationContext(),msg,Toast.LENGTH_LONG).show();
-         });
-     }
+        });
+        }
 
     }
 }
